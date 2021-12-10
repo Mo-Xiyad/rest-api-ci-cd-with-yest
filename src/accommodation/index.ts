@@ -21,7 +21,7 @@ accommodationRouter.post("/", async (req, res, next) => {
     const accommodation = new AccommodationModel(req.body);
     await accommodation.save();
     if (accommodation) {
-      res.status(201).send(accommodation._id);
+      res.status(201).send(accommodation);
     } else {
       res.status(400).send();
     }
@@ -55,10 +55,10 @@ accommodationRouter.put("/:accId", async (req, res, next) => {
     if (accommodation) {
       res.status(200).send(accommodation);
     } else {
-      res.status(400).send();
+      res.status(404).send();
     }
   } catch (error) {
-    res.status(400).send(); // this needs to change to next(httpCreateError())
+    res.status(404).send(); // this needs to change to next(httpCreateError())
     console.log(error);
   }
 });

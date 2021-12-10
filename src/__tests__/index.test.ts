@@ -1,4 +1,4 @@
-import { server } from "../index";
+import { server } from "../app";
 import mongoose from "mongoose";
 import supertest from "supertest";
 import dotenv from "dotenv";
@@ -25,15 +25,72 @@ describe("Testing accommodation endpoints", () => {
   });
 
   const data = {
-    name: "hello",
+    name: "Nico",
     description: "no description",
     maxGuests: 5,
     city: "london",
   };
 
-  it("should check that the POST /accommodations endpoint creates a new", async () => {
+  it(`should check that the "POST" /accommodations endpoint creates a new accommodation object`, async () => {
     const response = await request.post("/accommodations").send(data);
     expect(response.status).toBe(201);
+    expect(response.body.name).toBeDefined();
+    expect(response.body.description).toBeDefined();
+    expect(response.body.maxGuests).toBeDefined();
+    expect(response.body.city).toBeDefined();
+  });
+
+  let id: string;
+  it("should check on GET /accommodations endpoint return a list of accommodations", async () => {
+    const response = await request.get("/accommodations");
+    if (response.ok) {
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBeGreaterThan(0);
+      id = response.body[0]._id;
+    } else {
+      expect(response.status).toBe(404);
+    }
+  });
+  it("should check on GET /accommodations/:accId endpoint return one object that matches the id provided", async () => {
+    //   let s = "61b34985ef1edafab03e2bbb";
+    const response = await request.get(`/accommodations/${id}`);
+    console.log(response);
+    if (response.notFound) {
+      expect(response.status).toBe(404);
+    }
+    if (response.ok) {
+      expect(response.status).toBe(200);
+    }
+    if (response.badRequest) {
+      expect(response.status).toBe(400);
+    }
+  });
+
+  const updateData = {
+    name: "Name edited",
+    description: "no description",
+    maxGuests: 5,
+    city: "Sweden",
+  };
+  it(`should check that a valid PUT /accommodations/:id update request gets executed correctly `, async () => {
+    const response = await request
+      .put(`/accommodations/${id}`)
+      .send(updateData);
+    expect(response.status).toBe(200);
+    expect(response.body.name).toBe(updateData.name);
+  });
+
+  it(`should check that not valid PUT /accommodations/:id update request gets 404`, async () => {
+    const response = await request.put(`/accommodations/22355445`);
+    expect(response.status).toBe(404);
+  });
+
+  it(`should check that the DELETE /accommodation/:id get executed with a valid ID`, async () => {
+    const response = await request.delete(`/accommodations/${id}`);
+    expect(response.status).toBe(204);
+
+    const deleteAccommodation = await request.delete(`/accommodations/${id}`);
+    expect(deleteAccommodation.status).toBe(404);
   });
 
   afterAll((done) => {
