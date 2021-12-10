@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import accommodationRouter from "./accommodation";
+
 const server = express();
 
 process.env.TS_NODE_DEV && require("dotenv").config();
@@ -25,3 +26,5 @@ mongoose.connect(process.env.MONGODB_URL!).then(() => {
     console.table(listEndpoints(server));
   });
 });
+
+export { server };
