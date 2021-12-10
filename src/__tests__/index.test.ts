@@ -39,6 +39,8 @@ describe("Testing accommodation endpoints", () => {
   it(`should check that the "POST" /accommodations endpoint creates a new accommodation object`, async () => {
     const destination = await request.get("/destinations");
     const id = destination.body[0]._id;
+    // console.log(destination);
+
     const accommodation = {
       name: "Nico",
       description: "no description",
@@ -68,7 +70,7 @@ describe("Testing accommodation endpoints", () => {
   let s = "61b34985ef1edafab03e2bbb";
   it("should check on GET /accommodations/:accId endpoint return one object that matches the id provided", async () => {
     const response = await request.get(`/accommodations/${id}`);
-    // console.log(response);
+
     if (response.notFound) {
       expect(response.status).toBe(404);
     }

@@ -5,24 +5,24 @@ const destinationRouter = express.Router();
 
 destinationRouter.get("/", async (req, res, next) => {
   try {
-    let dest: any[] = [];
-    const accommodation = await AccommodationModel.find().populate("city");
+    // let dest: any[] = [];
+    // const accommodation = await AccommodationModel.find().populate("city");
 
-    accommodation.forEach((accommodation) => {
-      if (accommodation.city !== null && accommodation.city !== undefined) {
-        dest.push(accommodation);
-        // let d = accommodation.filter(
-        //   (acc: { city: any }) => acc.city.city !== acc.city.city
-        // );
-        // console.log(d);
-      }
-    });
+    // accommodation.forEach((accommodation) => {
+    //   if (accommodation.city !== null && accommodation.city !== undefined) {
+    //     dest.push(accommodation);
+    //     // let d = accommodation.filter(
+    //     //   (acc: { city: any }) => acc.city.city !== acc.city.city
+    //     // );
+    //     // console.log(d);
+    //   }
+    // });
 
-    console.log(dest);
+    // console.log(dest);
 
     const destination = await DestinationModel.find();
     if (destination) {
-      res.status(200).send(dest);
+      res.status(200).send(destination);
     } else {
       res.status(404).send();
     }
