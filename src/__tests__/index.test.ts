@@ -24,15 +24,28 @@ describe("Testing accommodation endpoints", () => {
     });
   });
 
-  const data = {
-    name: "Nico",
-    description: "no description",
-    maxGuests: 5,
-    city: "london",
+  const destination = {
+    country: "Sweden",
+    city: "Stockholm",
   };
 
   it(`should check that the "POST" /accommodations endpoint creates a new accommodation object`, async () => {
-    const response = await request.post("/accommodations").send(data);
+    const response = await request.post("/destinations").send(destination);
+    expect(response.status).toBe(201);
+    expect(response.body.city).toBeDefined();
+    expect(response.body.country).toBeDefined();
+  });
+
+  it(`should check that the "POST" /accommodations endpoint creates a new accommodation object`, async () => {
+    const destination = await request.get("/destinations");
+    const id = destination.body[0]._id;
+    const accommodation = {
+      name: "Nico",
+      description: "no description",
+      maxGuests: 5,
+      city: id,
+    };
+    const response = await request.post("/accommodations").send(accommodation);
     expect(response.status).toBe(201);
     expect(response.body.name).toBeDefined();
     expect(response.body.description).toBeDefined();
@@ -71,7 +84,6 @@ describe("Testing accommodation endpoints", () => {
     name: "Name edited",
     description: "no description",
     maxGuests: 5,
-    city: "Sweden",
   };
   it(`should check that a valid PUT /accommodations/:id update request gets executed correctly `, async () => {
     const response = await request

@@ -1,6 +1,7 @@
 import express from "express";
 
 import accommodationRouter from "./accommodation";
+import destinationRouter from "./destination";
 
 const server = express();
 
@@ -13,5 +14,6 @@ server.use(express.json());
 
 // Endpoints
 server.use("/accommodations", accommodationRouter);
+server.use("/destinations", destinationRouter);
 
 export { server };

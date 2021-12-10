@@ -5,7 +5,7 @@ const accommodationRouter = express.Router();
 
 accommodationRouter.get("/", async (req, res, next) => {
   try {
-    const accommodation = await AccommodationModel.find();
+    const accommodation = await AccommodationModel.find().populate("city");
     if (accommodation) {
       res.status(200).send(accommodation);
     } else {
@@ -33,7 +33,9 @@ accommodationRouter.post("/", async (req, res, next) => {
 accommodationRouter.get("/:accId", async (req, res, next) => {
   try {
     const id = req.params.accId;
-    const accommodation = await AccommodationModel.findById(id);
+    const accommodation = await AccommodationModel.findById(id).populate(
+      "city"
+    );
     if (accommodation) {
       res.status(200).send(accommodation);
     } else {

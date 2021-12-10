@@ -6,12 +6,5 @@ export const AccommodationSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   maxGuests: { type: Number, required: true },
-  city: { type: String, required: true },
+  city: { type: mongoose.Schema.Types.ObjectId, ref: "Destination" },
 });
-
-const data = {
-  name: "hello",
-  description: "no description",
-  maxGuests: 5,
-  city: "london",
-};
