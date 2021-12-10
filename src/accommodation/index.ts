@@ -5,7 +5,10 @@ const accommodationRouter = express.Router();
 
 accommodationRouter.get("/", async (req, res, next) => {
   try {
+    const accommodation = await AccommodationModel.find();
+    res.send(accommodation);
   } catch (error) {
+    res.status(404).send();
     console.log();
   }
 });

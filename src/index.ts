@@ -15,7 +15,7 @@ server.use(express.json());
 // server.use(cors);
 
 // Endpoints
-server.use("accommodations", accommodationRouter);
+server.use("/accommodations", accommodationRouter);
 
 // Db connection
 mongoose.connect(process.env.MONGODB_URL!).then(() => {

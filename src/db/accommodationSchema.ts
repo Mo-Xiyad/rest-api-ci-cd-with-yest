@@ -8,3 +8,10 @@ export const AccommodationSchema = new Schema({
   maxGuests: { type: Number, required: true },
   city: { type: String, required: true },
 });
+
+const data = {
+  name: "hello",
+  description: "no description",
+  maxGuests: 5,
+  city: "london",
+};
