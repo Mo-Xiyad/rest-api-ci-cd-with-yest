@@ -1,13 +1,28 @@
 import express from "express";
-import { DestinationModel } from "../db/models";
+import { AccommodationModel, DestinationModel } from "../db/models";
 
 const destinationRouter = express.Router();
 
 destinationRouter.get("/", async (req, res, next) => {
   try {
+    let dest: any[] = [];
+    const accommodation = await AccommodationModel.find().populate("city");
+
+    accommodation.forEach((accommodation) => {
+      if (accommodation.city !== null && accommodation.city !== undefined) {
+        dest.push(accommodation);
+        // let d = accommodation.filter(
+        //   (acc: { city: any }) => acc.city.city !== acc.city.city
+        // );
+        // console.log(d);
+      }
+    });
+
+    console.log(dest);
+
     const destination = await DestinationModel.find();
     if (destination) {
-      res.status(200).send(destination);
+      res.status(200).send(dest);
     } else {
       res.status(404).send();
     }
