@@ -51,10 +51,11 @@ describe("Testing accommodation endpoints", () => {
       expect(response.status).toBe(404);
     }
   });
+
+  let s = "61b34985ef1edafab03e2bbb";
   it("should check on GET /accommodations/:accId endpoint return one object that matches the id provided", async () => {
-    //   let s = "61b34985ef1edafab03e2bbb";
     const response = await request.get(`/accommodations/${id}`);
-    console.log(response);
+    // console.log(response);
     if (response.notFound) {
       expect(response.status).toBe(404);
     }
@@ -80,8 +81,9 @@ describe("Testing accommodation endpoints", () => {
     expect(response.body.name).toBe(updateData.name);
   });
 
+  //   invalid id
   it(`should check that not valid PUT /accommodations/:id update request gets 404`, async () => {
-    const response = await request.put(`/accommodations/22355445`);
+    const response = await request.put(`/accommodations/${s}`).send(updateData);
     expect(response.status).toBe(404);
   });
 
