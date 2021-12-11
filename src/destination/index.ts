@@ -11,16 +11,23 @@ destinationRouter.get("/", async (req, res, next) => {
     // accommodation.forEach((accommodation) => {
     //   if (accommodation.city !== null && accommodation.city !== undefined) {
     //     dest.push(accommodation);
-    //     // let d = accommodation.filter(
-    //     //   (acc: { city: any }) => acc.city.city !== acc.city.city
-    //     // );
-    //     // console.log(d);
     //   }
     // });
+    const { available } = req.query;
 
-    // console.log(dest);
+    const destination = await DestinationModel.find(
+      available
+        ? {
+            _id: [
+              ...(await AccommodationModel.find()
+                .populate("city")
+                .distinct("city")),
+            ],
+          }
+        : {}
+    );
 
-    const destination = await DestinationModel.find();
+    // const destination = await DestinationModel.find();
     if (destination) {
       res.status(200).send(destination);
     } else {
