@@ -5,7 +5,7 @@ import { JWTAuthMiddleware } from "../../middlewares/JWTAuthMiddleware";
 
 const destinationRouter = express.Router();
 
-destinationRouter.get("/", async (req, res, next) => {
+destinationRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     // let dest: any[] = [];
     // const accommodation = await AccommodationModel.find().populate("city");
@@ -36,29 +36,11 @@ destinationRouter.get("/", async (req, res, next) => {
       res.status(404).send();
     }
   } catch (error) {
-    // res.status(404).send();
-    // console.log();
+    res.status(404).send();
+    next();
+    console.log(error);
   }
 });
-// destinationRouter.post(
-//   "/",
-//   JWTAuthMiddleware,
-//   AdminCheckMiddleware,
-//   async (req, res, next) => {
-//     try {
-//       const destination = new DestinationModel(req.body);
-//       await destination.save();
-//       if (destination) {
-//         res.status(201).send(destination);
-//       } else {
-//         res.status(400).send();
-//       }
-//     } catch (error) {
-//       // res.status(400).send(); // this needs to change to next(httpCreateError())
-//       // console.log(error);
-//     }
-//   }
-// );
 
 destinationRouter.post(
   "/",
@@ -92,20 +74,25 @@ destinationRouter.post(
   }
 );
 
-destinationRouter.get("/:destinationId", async (req, res, next) => {
-  try {
-    // const id = req.params.destinationId;
-    // const destination = await DestinationModel.findById(id);
-    // if (destination) {
-    //   res.status(200).send(destination);
-    // } else {
-    //   res.status(404).send();
-    // }
-  } catch (error) {
-    // res.status(400).send(); // this needs to change to next(httpCreateError())
-    // console.log(error);
+destinationRouter.get(
+  "/:cityId",
+  JWTAuthMiddleware,
+  AdminCheckMiddleware,
+  async (req, res, next) => {
+    try {
+      const accommodations = await AccommodationModel.find({
+        city: req.params.cityId,
+      });
+      if (accommodations) {
+        res.status(200).send(accommodations);
+      } else {
+        res.status(404).send("Accommodation not found");
+      }
+    } catch (error) {
+      res.status(500).send({ success: false, message: "Something went wrong" });
+    }
   }
-});
+);
 destinationRouter.put("/:destinationId", async (req, res, next) => {
   try {
     // const id = req.params.destinationId;
