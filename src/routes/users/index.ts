@@ -1,12 +1,23 @@
 import express from "express";
 import UserModel from "../../db/usersSchema";
 import { JWTauth, verifyRefreshToken } from "../../tools/auth-tools";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import createHttpError from "http-errors";
 const { Router } = express;
 
-const router = Router();
+const usersRouter = Router();
 
-router.route("/login").post(async (req: Request, res: Response) => {
+usersRouter.route("/getUser").get(async (req: Request, res: Response) => {
+  try {
+    res
+      .status(200)
+      .send({ success: true, message: "Credentials are not correct" });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+usersRouter.route("/login").post(async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -26,40 +37,51 @@ router.route("/login").post(async (req: Request, res: Response) => {
   }
 });
 
-router.route("/register").post(async (req: Request, res: Response) => {
-  try {
-    const createUser = new UserModel(req.body);
+usersRouter.post(
+  "/register",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const newUser = new UserModel(req.body);
+      if (newUser) {
+        const { _id } = await newUser.save();
 
-    if (createUser) {
-      await createUser.save();
-
-      const { accessToken, refreshToken } = await JWTauth(createUser);
-
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: "lax",
-      });
-
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: "lax",
-      });
-
-      res.status(201).send({ success: true, user: createUser._id });
-    } else {
-      res.status(400).send({
-        success: false,
-        message: "Something Went Wrong in the creation of the user",
-      });
+        const { accessToken } = await JWTauth(newUser);
+        res.status(201).send({ _id, accessToken });
+      } else {
+        next(createHttpError(401, "Credentials not ok!"));
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    res.status(400).send({ success: false, error: error });
   }
-});
+);
 
-router.route("/refreshToken").post(async (req: Request, res: Response) => {
+// usersRouter
+//   .route("/register")
+//   .post(async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       console.log(req);
+
+//       const newUser = new UserModel(req.body);
+
+//       if (newUser) {
+//         const { _id } = await newUser.save();
+
+//         const { accessToken, refreshToken } = await JWTauth(newUser);
+//         res.status(201).send({ _id, accessToken, refreshToken });
+//       } else {
+//         res.status(400).send({
+//           success: false,
+//           message: "Something Went Wrong in the creation of the user",
+//         });
+//       }
+//     } catch (error) {
+//       res.status(400).send({ success: false, error: error });
+//       next();
+//     }
+//   });
+
+usersRouter.route("/refreshToken").post(async (req: Request, res: Response) => {
   try {
     const { currentRefreshToken } = req.body;
 
@@ -83,4 +105,4 @@ router.route("/refreshToken").post(async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export default usersRouter;

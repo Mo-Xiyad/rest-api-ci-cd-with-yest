@@ -10,7 +10,7 @@ process.env.TS_NODE_DEV && require("dotenv").config();
 
 // cors middleware's
 server.use(express.json());
-server.use(cors);
+server.use(cors());
 // Endpoints
 server.use("/accommodations", accommodationRouter);
 server.use("/destinations", destinationRouter);

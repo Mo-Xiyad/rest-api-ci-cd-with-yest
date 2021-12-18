@@ -28,6 +28,7 @@
   "dependencies": {
     "@types/cors": "^2.8.12",
     "@types/express-list-endpoints": "^6.0.0",
+    "@types/http-errors": "^1.8.1",
     "@types/jsonwebtoken": "^8.5.6",
     "atob": "^2.1.2",
     "bcrypt": "^5.0.1",
