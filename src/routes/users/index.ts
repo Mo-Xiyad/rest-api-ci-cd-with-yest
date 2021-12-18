@@ -1,6 +1,6 @@
 import express from "express";
-import UserModel from "../db/usersSchema";
-import { JWTauth, verifyRefreshToken } from "../tools/auth-tools";
+import UserModel from "../../db/usersSchema";
+import { JWTauth, verifyRefreshToken } from "../../tools/auth-tools";
 import { Request, Response } from "express";
 const { Router } = express;
 

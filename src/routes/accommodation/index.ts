@@ -1,5 +1,5 @@
 import express from "express";
-import { AccommodationModel } from "../db/models";
+import { AccommodationModel } from "../../db/models";
 
 const accommodationRouter = express.Router();
 

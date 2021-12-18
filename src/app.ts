@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
-import accommodationRouter from "./accommodation";
-import destinationRouter from "./destination";
-import UserRouter from "./users";
+import accommodationRouter from "./routes/accommodation";
+import destinationRouter from "./routes/destination";
+import UserRouter from "./routes/users";
 const server = express();
 
 process.env.TS_NODE_DEV && require("dotenv").config();
