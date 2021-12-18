@@ -48,17 +48,16 @@ destinationRouter.post(
   AdminCheckMiddleware,
   async (req, res) => {
     try {
-      const alreadyHere = await DestinationModel.find({});
+      const allDestinations = await DestinationModel.find({});
 
-      const foundCity = alreadyHere.find(
+      const foundCity = allDestinations.find(
         (destination) => destination.city === req.body.city
       );
 
       if (foundCity) {
-        res.status(400).send({ message: "City already there" });
+        res.status(400).send({ message: "City already exists" });
       } else {
         const destination = new DestinationModel(req.body);
-        // await destination.save();
 
         if (destination) {
           await destination.save();
@@ -74,43 +73,42 @@ destinationRouter.post(
   }
 );
 
-destinationRouter.get(
-  "/:cityId",
+destinationRouter.get("/:cityId", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const id = req.params.cityId;
+    const city = await DestinationModel.findById(id);
+    if (city) {
+      res.status(200).send(city);
+    } else {
+      res.status(404).send("Destination not found");
+    }
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Something went wrong" });
+  }
+});
+destinationRouter.put(
+  "/:destinationId",
   JWTAuthMiddleware,
   AdminCheckMiddleware,
   async (req, res, next) => {
     try {
-      const accommodations = await AccommodationModel.find({
-        city: req.params.cityId,
-      });
-      if (accommodations) {
-        res.status(200).send(accommodations);
-      } else {
-        res.status(404).send("Accommodation not found");
-      }
+      // const id = req.params.destinationId;
+      // const destination = await DestinationModel.findByIdAndUpdate(
+      //   id,
+      //   req.body,
+      //   { new: true }
+      // );
+      // if (destination) {
+      //   res.status(200).send(destination);
+      // } else {
+      //   res.status(404).send();
+      // }
     } catch (error) {
-      res.status(500).send({ success: false, message: "Something went wrong" });
+      // res.status(404).send(); // this needs to change to next(httpCreateError())
+      // console.log(error);
     }
   }
 );
-destinationRouter.put("/:destinationId", async (req, res, next) => {
-  try {
-    // const id = req.params.destinationId;
-    // const destination = await DestinationModel.findByIdAndUpdate(
-    //   id,
-    //   req.body,
-    //   { new: true }
-    // );
-    // if (destination) {
-    //   res.status(200).send(destination);
-    // } else {
-    //   res.status(404).send();
-    // }
-  } catch (error) {
-    // res.status(404).send(); // this needs to change to next(httpCreateError())
-    // console.log(error);
-  }
-});
 destinationRouter.delete("/:destinationId", async (req, res, next) => {
   try {
     // const id = req.params.destinationId;

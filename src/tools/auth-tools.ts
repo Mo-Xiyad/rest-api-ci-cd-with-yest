@@ -5,7 +5,7 @@ import IUser from "../interfaces/IUser";
 import UserModel from "../db/usersSchema";
 
 export const JWTauth = async (user: IUser & Document) => {
-  const accessToken = await generateJWTToken({ _id: user._id });
+  const accessToken = await generateJWTAccessToken({ _id: user._id });
   const refreshToken = await generateRefreshJWTToken({ _id: user._id });
 
   user.refreshToken = refreshToken;
@@ -15,7 +15,7 @@ export const JWTauth = async (user: IUser & Document) => {
   return { accessToken, refreshToken };
 };
 
-const generateJWTToken = (payload: StrivagoJwt) =>
+const generateJWTAccessToken = (payload: StrivagoJwt) =>
   new Promise<string>((resolve, reject) =>
     jwt.sign(
       payload,
