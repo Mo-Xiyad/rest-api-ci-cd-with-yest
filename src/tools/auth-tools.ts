@@ -32,7 +32,7 @@ const generateRefreshJWTToken = (payload: StrivagoJwt) =>
   new Promise<string>((resolve, reject) =>
     jwt.sign(
       payload,
-      process.env.JWT_REFRESH_SECRET!,
+      process.env.JWT_REFRESH_SECRET!, //node require("crypto").randomBytes(64).toString("hex")
       { expiresIn: "1 week" },
       (err, token) => {
         if (err) reject(err);
